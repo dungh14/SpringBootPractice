@@ -14,9 +14,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
   sendgrid:
-    #api-key: a
+    api-key:
     from-email: dunghoangf7.yhd@gmail.com
     templateId: d-3b9ed05e91a34c25984fd27218a632fd
     verificationLink: http://localhost:8080/user/confirm-email
@@ -36,5 +36,5 @@ open-api:
 jwt:
   expiryMinutes: 5
   expiryDay: 14
-  accessKey: b
-  refreshKey: c
+  accessKey:
+  refreshKey:

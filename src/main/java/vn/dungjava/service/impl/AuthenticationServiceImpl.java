@@ -9,11 +9,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import vn.dungjava.common.TokenType;
 import vn.dungjava.controller.request.SignInRequest;
 import vn.dungjava.controller.response.TokenResponse;
+import vn.dungjava.exception.InvalidDataException;
+import vn.dungjava.model.UserEntity;
 import vn.dungjava.repository.UserRepository;
 import vn.dungjava.service.AuthenticationService;
 import vn.dungjava.service.JwtService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,28 +35,58 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public TokenResponse getAccessToken(SignInRequest request) {
         log.info("Get access token");
 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-
+        List<String> authorities = new ArrayList<>();
         try {
+            //thuc hien xac thuc voi username va password
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+
+            log.info("Authenticated: {}", authentication.isAuthenticated());
+            log.info("User: {}", authentication.getAuthorities());
+            authorities.add(authentication.getAuthorities().toString());
+
+            //xac thuc thanh cong thi luu vao security context
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
             log.error("Login failed!, message: {}",e.getMessage());
             throw new AccessDeniedException(e.getMessage());
         }
 
-        var user =  userRepository.findByUsername(request.getUsername());
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found!");
-        }
+        //get user
+//        var user =  userRepository.findByUsername(request.getUsername());
+//        if (user == null) {
+//            throw new UsernameNotFoundException("User not found!");
+//        }
 
-        String accessToken = jwtService.generateAccessToken(user.getId(), request.getUsername(), user.getAuthorities());
-        String refreshToken = jwtService.generateRefreshToken(user.getId(), request.getUsername(), user.getAuthorities());
+        String accessToken = jwtService.generateAccessToken(request.getUsername(), authorities);
+        String refreshToken = jwtService.generateRefreshToken(request.getUsername(), authorities);
 
         return TokenResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }
 
     @Override
-    public TokenResponse getRefreshToken(String request) {
-        return null;
+    public TokenResponse getRefreshToken(String refreshToken) {
+        log.info("Get refresh token");
+
+        if(!StringUtils.hasText(refreshToken)) {
+            throw new InvalidDataException("Token is empty");
+        }
+
+        try {
+            //Verify token
+            String username = jwtService.extractUsername(refreshToken, TokenType.REFRESH_TOKEN);
+
+            //check user is active or inactivated
+            UserEntity user = userRepository.findByUsername(username);
+            List<String> authorities = new ArrayList<>();
+            user.getAuthorities().forEach(authority -> authorities.add(authority.toString()));
+
+            //generate new access token
+            String accessToken = jwtService.generateAccessToken(user.getUsername(), authorities);
+
+            return TokenResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
+        } catch (Exception e) {
+            log.error("Login failed!, message: {}",e.getMessage());
+            throw new AccessDeniedException(e.getMessage());
+        }
     }
 }

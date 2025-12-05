@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,7 +32,7 @@ import java.util.Date;
 @Component
 @Slf4j(topic = "CUSTOMIZE-REQUEST-FILTER")
 @RequiredArgsConstructor
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true)
 public class CustomizeRequestFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -52,10 +53,10 @@ public class CustomizeRequestFilter extends OncePerRequestFilter {
                 log.info("Username {}", username);
             } catch (AccessDeniedException e) {
                 log.error("Access denied, message: {}", e.getMessage());
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.setStatus(HttpServletResponse.SC_OK);
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
-                response.getWriter().write(ErrorResponse(e.getMessage()));
+                response.getWriter().write(ErrorResponse(request.getRequestURI(),e.getMessage()));
                 return;
             }
 
@@ -73,11 +74,18 @@ public class CustomizeRequestFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String ErrorResponse(String message) {
+    /**
+     * Create error response with pretty template
+     * @param message
+     * @return
+     */
+
+    private String ErrorResponse(String url ,String message) {
         try {
             ErrorResponse errorResponse = new ErrorResponse();
             errorResponse.setTimestamp(new Date());
             errorResponse.setError("Forbidden");
+            errorResponse.setPath(url);
             errorResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
             errorResponse.setMessage(message);
 
@@ -93,6 +101,7 @@ public class CustomizeRequestFilter extends OncePerRequestFilter {
     private class ErrorResponse {
         private Date timestamp;
         private int status;
+        private String path;
         private String error;
         private String message;
     }
