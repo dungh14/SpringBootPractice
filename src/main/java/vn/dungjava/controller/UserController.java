@@ -50,7 +50,7 @@ public class UserController {
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("status", HttpStatus.OK.value());
-        result.put("message", "user list");
+        result.put("message", "users");
         result.put("data", userList);
 
         return result;

@@ -33,6 +33,6 @@ public class AuthenticationController {
     @PostMapping("/refresh-token")
     public TokenResponse getRefreshToken(@RequestBody String refreshToken) {
         log.info("Refresh token request");
-        return TokenResponse.builder().accessToken("DUMMY-NEW-ACCESS-TOKEN").refreshToken("DUMMY-REFRESH-TOKEN").build();
+        return authenticationService.getRefreshToken(refreshToken);
     }
 }

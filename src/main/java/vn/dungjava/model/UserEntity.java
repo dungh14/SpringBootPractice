@@ -78,25 +78,25 @@ public class UserEntity extends AbstractEntity<Long> implements UserDetails, Ser
 
         //add role name to authority
         //c1 neu su dung hasAnyAuthority
-//        return roleNames.stream().map(SimpleGrantedAuthority::new).toList();
+        return roleNames.stream().map(SimpleGrantedAuthority::new).toList();
 
         //c2 neu muon su dung hasAnyRole
-        return roleNames.stream().map(s -> new SimpleGrantedAuthority("ROLE_"+ s.toUpperCase())).toList();
+//        return roleNames.stream().map(s -> new SimpleGrantedAuthority("ROLE_"+ s.toUpperCase())).toList();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override

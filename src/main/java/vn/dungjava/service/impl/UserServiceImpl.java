@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = getUserEntity(id);
 
         return UserResponse.builder()
-                .id(userEntity.getId())
+                .id(id)
                 .firstName(userEntity.getFirstName())
                 .lastName(userEntity.getLastName())
                 .gender(userEntity.getGender())
@@ -133,11 +133,11 @@ public class UserServiceImpl implements UserService {
         userEntity.setType(req.getType());
         userEntity.setStatus(UserStatus.NONE);
 
-        userRepository.save(userEntity);
+        UserEntity result = userRepository.save(userEntity);
         log.info("Saved user: {}", userEntity);
 
         if(userEntity.getId() != null) {
-            log.info("User with id: {}", userEntity.getId());
+            log.info("User with id: {}", result.getId());
 
             List<AddressEntity> addresses = new ArrayList<>();
             req.getAddress().forEach(address -> {
@@ -150,7 +150,7 @@ public class UserServiceImpl implements UserService {
                 addressEntity.setCity(address.getCity());
                 addressEntity.setCountry(address.getCountry());
                 addressEntity.setAddressType(address.getAddressType());
-                addressEntity.setUserId(userEntity.getId());
+                addressEntity.setUserId(result.getId());
                 addresses.add(addressEntity);
             });
             addressRepository.saveAll(addresses);
@@ -164,7 +164,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException(e);
         }
 
-        return userEntity.getId();
+        return result.getId();
     }
 
     @Override

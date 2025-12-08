@@ -37,4 +37,4 @@ jwt:
   expiryMinutes: 5
   expiryDay: 14
   accessKey:
-  refreshKey:
+  refreshKey: 

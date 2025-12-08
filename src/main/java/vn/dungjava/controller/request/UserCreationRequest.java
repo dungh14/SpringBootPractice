@@ -3,6 +3,7 @@ package vn.dungjava.controller.request;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import vn.dungjava.common.Gender;
 import vn.dungjava.common.UserType;
@@ -12,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @Getter
+@Setter
 @ToString
 public class UserCreationRequest implements Serializable {
     @NotBlank(message = "firstName must be not blank")
