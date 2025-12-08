@@ -5,9 +5,9 @@ spring:
   devtools:
     add-properties: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: dunghoang1413
+    url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/postgres
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:dunghoang1413}
   jpa:
     properties:
       hibernate:
@@ -37,4 +37,4 @@ jwt:
   expiryMinutes: 5
   expiryDay: 14
   accessKey:
-  refreshKey: 
+  refreshKey:
