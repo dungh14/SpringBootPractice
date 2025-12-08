@@ -80,10 +80,6 @@ class UserServiceTest {
         userService = new UserServiceImpl(userRepository, addressRepository, passwordEncoder, emailService);
     }
 
-    @AfterEach
-    void tearDown() {
-    }
-
     @Test
     void testGetListUsers_Success() {
         //gia lap phuong thuc

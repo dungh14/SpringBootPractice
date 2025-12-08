@@ -1,13 +1,10 @@
 package vn.dungjava.service;
 
-import org.apache.catalina.User;
 import vn.dungjava.controller.request.UserCreationRequest;
 import vn.dungjava.controller.request.UserPasswordRequest;
 import vn.dungjava.controller.request.UserUpdateRequest;
 import vn.dungjava.controller.response.UserPageResponse;
 import vn.dungjava.controller.response.UserResponse;
-
-import java.util.List;
 
 public interface UserService {
 

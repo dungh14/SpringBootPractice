@@ -23,6 +23,6 @@ public class Role extends AbstractEntity<Integer> implements Serializable {
     private String description;
 
     @OneToMany(mappedBy = "role")
-    private Set<RoleHasPermission> roles = new HashSet<RoleHasPermission>();
+    private Set<RoleHasPermission> roles = new HashSet<>();
 
 }

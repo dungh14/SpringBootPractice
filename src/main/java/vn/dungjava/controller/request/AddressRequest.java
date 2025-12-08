@@ -1,6 +1,5 @@
 package vn.dungjava.controller.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

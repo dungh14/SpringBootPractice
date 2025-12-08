@@ -80,7 +80,7 @@ public class EmailService {
 
         String secretCode = String.format("?secretCode=%s", UUID.randomUUID());
 
-        //TODO generate secret code and save to db
+        //generate secret code and save to db
 
         //Dinh nghia template
         Map<String, String> map = new HashMap<>();

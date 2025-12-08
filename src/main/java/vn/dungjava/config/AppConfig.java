@@ -1,7 +1,6 @@
 package vn.dungjava.config;
 
 import com.sendgrid.SendGrid;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

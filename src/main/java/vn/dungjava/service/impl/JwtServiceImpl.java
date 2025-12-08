@@ -71,13 +71,21 @@ public class JwtServiceImpl implements JwtService {
         return claimsResolver.apply(claims);
     }
 
-    private Claims extraAllClaim(String token, TokenType type){
+    private Claims extraAllClaim(String token, TokenType type) {
         try {
-            return Jwts.parser().setSigningKey(accessKey).parseClaimsJws(token).getBody();
+            Key key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(accessKey));
+
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
         } catch (SignatureException | ExpiredJwtException e) {
             throw new AccessDeniedException("Access denied! error: " + e.getMessage());
         }
     }
+
 
     private String generateToken(Map<String, Object> claims, String username) {
         log.info("Generate Token for user: {} with claims: {}", username, claims);

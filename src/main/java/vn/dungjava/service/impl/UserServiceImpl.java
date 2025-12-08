@@ -80,9 +80,7 @@ public class UserServiceImpl implements UserService {
             entityPage = userRepository.findAll(pageable);
         }
 
-        UserPageResponse response = getUserPageResponse(page, pageSize, entityPage);
-
-        return response;
+        return getUserPageResponse(page, pageSize, entityPage);
     }
 
 
